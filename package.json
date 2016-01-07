@@ -1,0 +1,22 @@
+{
+  "name": "gulp-utils",
+  "private": "true",
+  "version": "0.0.1",
+  "description": "Shared Gulp resources",
+  "author": "Q",
+  "dependencies": {},
+  "devDependencies": {
+    "browserify": "~10.2.1",
+    "gulp-if": "1.2.5",
+    "gulp-livereload": "3.8.0",
+    "gulp-rename": "1.2.0",
+    "vinyl-buffer": "1.0.0",
+    "vinyl-source-stream": "1.1.0",
+    "watchify": "~3.2.1"
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:managedbyq/gulp-utils.git"
+  }
+}
