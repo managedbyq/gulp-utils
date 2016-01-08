@@ -4,8 +4,7 @@
   "version": "0.0.1",
   "description": "Shared Gulp resources",
   "author": "Q",
-  "dependencies": {},
-  "devDependencies": {
+  "dependencies": {
     "browserify": "~10.2.1",
     "gulp": "3.8.11",
     "gulp-if": "1.2.5",
@@ -16,6 +15,7 @@
     "vinyl-source-stream": "1.1.0",
     "watchify": "~3.2.1"
   },
+  "devDependencies": {},
   "main": "index.js",
   "repository": {
     "type": "git",
