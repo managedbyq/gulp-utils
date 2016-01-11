@@ -43,3 +43,5 @@ module.exports.browserifyHelper = function(inputFile, options) {
 
   return rebundle();
 }
+
+module.exports.fivetran = require('./fivetran');
