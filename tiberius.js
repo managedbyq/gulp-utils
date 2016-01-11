@@ -16,8 +16,8 @@ function fullCommitMessage(hash, cb) {
         });
 }
 
-module.exports.releaseNotes = function(firstTag, secondTag, cb) {
-    var linkTemplate = _.template('https://github.com/managedbyq/os-core/pull/<%= num %>/files');
+module.exports.releaseNotes = function(repoName, firstTag, secondTag, cb) {
+    var linkTemplate = _.template('https://github.com/managedbyq/<%= repoName %>/pull/<%= num %>/files');
     var lineTemplate = _.template('\u2022 (<%= author %>) <%= description %> - <<%= link %>|github>');
     git(process.cwd()).log({from: firstTag, to: secondTag}, function (err, log) {
         if (err) {
@@ -37,7 +37,7 @@ module.exports.releaseNotes = function(firstTag, secondTag, cb) {
                     var prNumber = message.match(/Merge pull request #(\d+)/)[1];
                     var description = message.split('\n', 3)[2];
 
-                    var link = linkTemplate({num: prNumber});
+                    var link = linkTemplate({num: prNumber, repoName: repoName});
                     var line = lineTemplate({author: commit.author_name, description: description, link: link});
                     cb(null, line);
                 });
