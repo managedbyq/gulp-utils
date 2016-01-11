@@ -46,6 +46,7 @@ module.exports.releaseNotes = function(firstTag, secondTag, cb) {
             if (err) {
                 cb(err);
             }
+            results.reverse();
             cb(null, results.join('\n'));
         });
     });
