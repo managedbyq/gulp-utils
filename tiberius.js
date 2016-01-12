@@ -2,7 +2,7 @@
 
 var async = require('async');
 var git = require('simple-git');
-var NodeGit = require('NodeGit');
+var NodeGit = require('nodegit');
 var semver = require('semver');
 var Slack = require('slack-node');
 var _ = require('lodash');
