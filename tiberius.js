@@ -1,23 +1,14 @@
 'use strict';
 
 var async = require('async');
+var exec = require('child_process').exec;
 var git = require('simple-git');
-var NodeGit = require('nodegit');
 var semver = require('semver');
 var Slack = require('slack-node');
 var _ = require('lodash');
 
 function fullCommitMessage(hash, cb) {
-  NodeGit.Repository.open(process.cwd())
-    .then(function (repo) {
-      return repo.getCommit(hash);
-    })
-    .then(function (commit) {
-      cb(null, commit.message());
-    })
-    .catch(function (err) {
-      cb(err);
-    });
+  exec('git log -n 1 --pretty=format:%B ' + hash, cb);
 }
 
 function sendSlackMessage(options, cb) {
