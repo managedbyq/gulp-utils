@@ -17,7 +17,7 @@ function fullCommitMessage(hash, cb) {
     });
 }
 
-module.exports.sendSlackMessage = function (options, cb) {
+function sendSlackMessage(options, cb) {
   options = _.extend({channel: '#dev-ci'}, options || {});
   slack = new Slack(options.apiToken);
   slack.api('chat.postMessage', {
@@ -32,9 +32,9 @@ module.exports.sendSlackMessage = function (options, cb) {
               '%2C_Romisch-Germanisches_Museum%2C_Cologne_%288115606671%29.jpg',
     username: 'Tiberius'
   }, cb);
-};
+}
 
-module.exports.releaseNotes = function (repoName, firstTag, secondTag, cb) {
+function releaseNotes(repoName, firstTag, secondTag, cb) {
   var linkTemplate = _.template('https://github.com/managedbyq/<%= repoName %>/pull/<%= num %>/files');
   var lineTemplate = _.template('\u2022 (<%= author %>) <%= description %> - <<%= link %>|github>');
   git(process.cwd()).log({from: firstTag, to: secondTag}, function (err, log) {
@@ -67,5 +67,17 @@ module.exports.releaseNotes = function (repoName, firstTag, secondTag, cb) {
       results.reverse();
       cb(null, results.join('\n'));
     });
+  });
+}
+
+module.exports.publishReleaseNotes = function(options, cb) {
+  var template = _.template('*<%= headline %>*\n<%= notes %>');
+  releaseNotes(options.repoName, options.firstTag, options.secondTag, function(err, releaseNotes) {
+    if (err) {
+      cb(err);
+    }
+    sendSlackMessage(_.extend({}, options, {
+      message: template({ repoName: options.repoName, headline: options.headline, notes: releaseNotes })
+    }), cb);
   });
 };
