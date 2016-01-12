@@ -1,3 +1,5 @@
+'use strict';
+
 var async = require('async');
 var git = require('simple-git');
 var NodeGit = require('NodeGit');
@@ -18,8 +20,8 @@ function fullCommitMessage(hash, cb) {
 }
 
 function sendSlackMessage(options, cb) {
+  var slack = new Slack(options.apiToken);
   options = _.extend({channel: '#dev-ci'}, options || {});
-  slack = new Slack(options.apiToken);
   slack.api('chat.postMessage', {
     channel: options.channel,
     attachments: JSON.stringify([{
@@ -40,6 +42,7 @@ function releaseNotes(repoName, firstTag, secondTag, cb) {
   git(process.cwd()).log({from: firstTag, to: secondTag}, function (err, log) {
     if (err) {
       cb(err);
+      return;
     }
 
     var prCommits = _.filter(log.all, function (commit) {
@@ -51,6 +54,7 @@ function releaseNotes(repoName, firstTag, secondTag, cb) {
         fullCommitMessage(commit.hash.substr(1), function (err, message) {
           if (err) {
             cb(err);
+            return;
           }
           var prNumber = message.match(/Merge pull request #(\d+)/)[1];
           var description = message.split('\n', 3)[2];
@@ -63,6 +67,7 @@ function releaseNotes(repoName, firstTag, secondTag, cb) {
     }), function (err, results) {
       if (err) {
         cb(err);
+        return;
       }
       results.reverse();
       cb(null, results.join('\n'));
@@ -75,6 +80,7 @@ module.exports.publishReleaseNotes = function(options, cb) {
   releaseNotes(options.repoName, options.firstTag, options.secondTag, function(err, releaseNotes) {
     if (err) {
       cb(err);
+      return;
     }
     sendSlackMessage(_.extend({}, options, {
       message: template({ repoName: options.repoName, headline: options.headline, notes: releaseNotes })
