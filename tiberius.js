@@ -8,9 +8,7 @@ var Slack = require('slack-node');
 var _ = require('lodash');
 
 function fullCommitMessage(hash, cb) {
-  exec('git log -n 1 --pretty=format:%B ' + hash, function(err, stdout, stderr) {
-    cb(err, stdout);
-  });
+  exec('git log -n 1 --pretty=format:%B ' + hash, cb);
 }
 
 function sendSlackMessage(options, cb) {
