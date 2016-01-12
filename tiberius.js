@@ -3,6 +3,7 @@
 var async = require('async');
 var git = require('simple-git');
 var NodeGit = require('NodeGit');
+var semver = require('semver');
 var Slack = require('slack-node');
 var _ = require('lodash');
 
@@ -85,5 +86,24 @@ module.exports.publishReleaseNotes = function(options, cb) {
     sendSlackMessage(_.extend({}, options, {
       message: template({ repoName: options.repoName, headline: options.headline, notes: releaseNotes })
     }), cb);
+  });
+};
+
+module.exports.mostRecentRelease = function(cb) {
+  git(process.cwd()).tags(function(err, tags) {
+    if (err) {
+      cb(err);
+      return;
+    }
+    var versions = _(tags.all)
+        .filter(function (tag) {
+          return tag.match(/^v\d+\.\d+\.\d+$/);
+        })
+        .map(function (tag) {
+          return tag.substr(1);
+        })
+        .value();
+    versions.sort(semver.rcompare);
+    cb(null, versions[0]);
   });
 };
