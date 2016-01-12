@@ -27,7 +27,7 @@ function sendSlackMessage(options, cb) {
     attachments: JSON.stringify([{
       'text': options.message,
       'color': 'warning',
-      'mrkdwn_in': ["text"]
+      'mrkdwn_in': ['text']
     }]),
     icon_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Tiberius%2C_Romisch-' +
               'Germanisches_Museum%2C_Cologne_%288115606671%29.jpg/440px-Tiberius' +
@@ -46,7 +46,7 @@ function releaseNotes(repoName, firstTag, secondTag, cb) {
     }
 
     var prCommits = _.filter(log.all, function (commit) {
-      return commit.message.startsWith("Merge pull request");
+      return commit.message.startsWith('Merge pull request');
     });
 
     async.parallel(_.map(prCommits, function (commit) {
@@ -63,7 +63,7 @@ function releaseNotes(repoName, firstTag, secondTag, cb) {
           var line = lineTemplate({author: commit.author_name, description: description, link: link});
           cb(null, line);
         });
-      }
+      };
     }), function (err, results) {
       if (err) {
         cb(err);
