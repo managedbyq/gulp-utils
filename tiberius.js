@@ -3,6 +3,7 @@
 var async = require('async');
 var exec = require('child_process').exec;
 var git = require('simple-git');
+var mysql = require('mysql');
 var semver = require('semver');
 var Slack = require('slack-node');
 var _ = require('lodash');
@@ -67,34 +68,38 @@ function releaseNotes(repoName, firstTag, secondTag, cb) {
   });
 }
 
-module.exports.publishReleaseNotes = function(options, cb) {
+module.exports.publishReleaseNotes = function (options, cb) {
   var template = _.template('*<%= headline %>*\n<%= notes %>');
-  releaseNotes(options.repoName, options.firstTag, options.secondTag, function(err, releaseNotes) {
+  releaseNotes(options.repoName, options.firstTag, options.secondTag, function (err, releaseNotes) {
     if (err) {
       cb(err);
       return;
     }
     sendSlackMessage(_.extend({}, options, {
-      message: template({ repoName: options.repoName, headline: options.headline, notes: releaseNotes })
+      message: template({repoName: options.repoName, headline: options.headline, notes: releaseNotes})
     }), cb);
   });
 };
 
-module.exports.mostRecentRelease = function(cb) {
-  git(process.cwd()).tags(function(err, tags) {
-    if (err) {
-      cb(err);
-      return;
-    }
-    var versions = _(tags.all)
-        .filter(function (tag) {
-          return tag.match(/^v\d+\.\d+\.\d+$/);
-        })
-        .map(function (tag) {
-          return tag.substr(1);
-        })
-        .value();
-    versions.sort(semver.rcompare);
-    cb(null, versions[0]);
+module.exports.mostRecentProductionRelease = function (credentials, applicationName, cb) {
+  var connection = mysql.createConnection({
+    host: 'q-production-2-mysql.cqda97epkbod.us-east-1.rds.amazonaws.com',
+    user: credentials.user,
+    password: credentials.password,
+    database: 'q'
   });
+
+  connection.connect();
+
+  connection.query('SELECT * from applications_application where name=?', [applicationName],
+      function (err, rows) {
+        if (err) {
+          cb(err);
+          return;
+        }
+
+        cb(null, rows[0].version);
+      });
+
+  connection.end();
 };
