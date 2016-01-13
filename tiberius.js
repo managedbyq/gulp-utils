@@ -85,7 +85,7 @@ module.exports.mostRecentProductionRelease = function (credentials, applicationN
   var connection = mysql.createConnection({
     host: 'q-production-2-mysql.cqda97epkbod.us-east-1.rds.amazonaws.com',
     user: credentials.user,
-    password: credentials.pass,
+    password: credentials.password,
     database: 'q'
   });
 
