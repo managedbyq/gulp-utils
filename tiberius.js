@@ -3,8 +3,7 @@
 var async = require('async');
 var exec = require('child_process').exec;
 var git = require('simple-git');
-var mysql = require('mysql');
-var semver = require('semver');
+var request = require('superagent');
 var Slack = require('slack-node');
 var _ = require('lodash');
 
@@ -81,25 +80,70 @@ module.exports.publishReleaseNotes = function (options, cb) {
   });
 };
 
-module.exports.mostRecentProductionRelease = function (credentials, applicationName, cb) {
-  var connection = mysql.createConnection({
-    host: 'q-production-2-mysql.cqda97epkbod.us-east-1.rds.amazonaws.com',
-    user: credentials.user,
-    password: credentials.password,
-    database: 'q'
-  });
+function mostRecentRelease(config, cb) {
+  var apiUrl = config.apiUrl;
+  var token = config.token;
+  var applicationName = config.applicationName;
 
-  connection.connect();
+  request
+    .get(apiUrl + '/api/v1/applications/' + applicationName + '/')
+    .set('X-Application-Token', token)
+    .end(function (err, res) {
+      if (err) {
+        cb(err);
+        return;
+      }
+      cb(null, JSON.parse(res.text).version);
+    })
+}
 
-  connection.query('SELECT * from applications_application where name=?', [applicationName],
-      function (err, rows) {
-        if (err) {
-          cb(err);
-          return;
-        }
+function setReleasedVersion(config, newVersion, cb) {
+  var apiUrl = config.apiUrl;
+  var token = config.token;
+  var applicationName = config.applicationName;
 
-        cb(null, rows[0].version);
-      });
+  request
+    .patch(apiUrl + '/api/v1/applications/' + applicationName + '/')
+    .send({version: newVersion})
+    .set('X-Application-Token', token)
+    .end(cb);
+}
 
-  connection.end();
+module.exports.mostRecentProductionRelease = function (token, applicationName, cb) {
+  mostRecentRelease({
+      apiUrl: 'https://api.managedbyq.com',
+      applicationName: applicationName,
+      token: token
+    },
+    cb);
+};
+
+module.exports.releaseVersionToDev = function (token, applicationName, newVersion, cb) {
+  setReleasedVersion({
+      apiUrl: 'https://api.dev.mbq.io',
+      applicationName: applicationName,
+      token: token
+    },
+    newVersion,
+    cb);
+};
+
+module.exports.releaseVersionToStg = function (token, applicationName, newVersion, cb) {
+  setReleasedVersion({
+      apiUrl: 'https://api.stg.mbq.io',
+      applicationName: applicationName,
+      token: token
+    },
+    newVersion,
+    cb);
+};
+
+module.exports.releaseVersionToPrd = function (token, applicationName, newVersion, cb) {
+  setReleasedVersion({
+      apiUrl: 'https://api.managedbyq.com',
+      applicationName: applicationName,
+      token: token
+    },
+    newVersion,
+    cb);
 };
