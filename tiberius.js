@@ -94,7 +94,7 @@ function mostRecentRelease(config, cb) {
         return;
       }
       cb(null, JSON.parse(res.text).version);
-    })
+    });
 }
 
 function setReleasedVersion(config, newVersion, cb) {
