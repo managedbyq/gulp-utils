@@ -21,6 +21,7 @@
     "watchify": "~3.2.1"
   },
   "devDependencies": {
+    "cors": "^2.7.1",
     "express": "^4.13.3",
     "gulp-jshint": "^2.0.0",
     "jshint": "^2.8.0",
