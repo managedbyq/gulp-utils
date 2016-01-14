@@ -44,4 +44,5 @@ module.exports.browserifyHelper = function(inputFile, options) {
   return rebundle();
 };
 
+module.exports.runServer = require('./lib/server');
 module.exports.tiberius = require('./tiberius');
