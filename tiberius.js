@@ -14,6 +14,12 @@ function fullCommitMessage(hash, cb) {
 function sendSlackMessage(options, cb) {
   var slack = new Slack(options.apiToken);
   options = _.extend({channel: '#dev-ci'}, options || {});
+
+  if (options.test) {
+    console.log('Simulating sending slack message "' + options.message + '" to ' + options.channel);
+    cb(null);
+    return;
+  }
   slack.api('chat.postMessage', {
     channel: options.channel,
     attachments: JSON.stringify([{
@@ -27,6 +33,8 @@ function sendSlackMessage(options, cb) {
     username: 'Tiberius'
   }, cb);
 }
+
+module.exports.sendSlackMessage = sendSlackMessage;
 
 function releaseNotes(repoName, firstTag, secondTag, cb) {
   var linkTemplate = _.template('https://github.com/managedbyq/<%= repoName %>/pull/<%= num %>/files');
@@ -112,6 +120,15 @@ function setReleasedVersion(config, newVersion, cb) {
 module.exports.mostRecentProductionRelease = function (token, applicationName, cb) {
   mostRecentRelease({
       apiUrl: 'https://api.managedbyq.com',
+      applicationName: applicationName,
+      token: token
+    },
+    cb);
+};
+
+module.exports.mostRecentDevRelease = function (token, applicationName, cb) {
+  mostRecentRelease({
+      apiUrl: 'https://api.dev.mbq.io',
       applicationName: applicationName,
       token: token
     },
