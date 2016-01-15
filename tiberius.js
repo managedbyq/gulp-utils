@@ -11,7 +11,7 @@ function fullCommitMessage(hash, cb) {
   exec('git log -n 1 --pretty=format:%B ' + hash, cb);
 }
 
-module.exports.sendSlackMessage = function(options, cb) {
+function sendSlackMessage(options, cb) {
   var slack = new Slack(options.apiToken);
   options = _.extend({channel: '#dev-ci'}, options || {});
 
@@ -32,7 +32,9 @@ module.exports.sendSlackMessage = function(options, cb) {
               '%2C_Romisch-Germanisches_Museum%2C_Cologne_%288115606671%29.jpg',
     username: 'Tiberius'
   }, cb);
-};
+}
+
+module.exports.sendSlackMessage = sendSlackMessage;
 
 function releaseNotes(repoName, firstTag, secondTag, cb) {
   var linkTemplate = _.template('https://github.com/managedbyq/<%= repoName %>/pull/<%= num %>/files');
