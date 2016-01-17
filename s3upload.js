@@ -1,6 +1,8 @@
 'use strict';
 
+var async = require('async');
 var s3 = require('s3');
+var _ = require('lodash');
 
 /**
  *
@@ -9,9 +11,8 @@ var s3 = require('s3');
  * @param {string} config.accessKeyId
  * @param {string} config.secretAccessKey
  * @param {string} config.localDir
- * @returns {{upload: Function}}
  */
-module.exports.upload = function (config, cb) {
+function upload(config, cb) {
   var client = s3.createClient({
     s3Options: {
       accessKeyId: config.accessKeyId,
@@ -32,4 +33,16 @@ module.exports.upload = function (config, cb) {
     console.log('Uploaded ' + config.bucket + '/' + s3Key);
   });
   uploader.on('end', cb);
+}
+
+/**
+ * @param {string} config.prefix e.g., 'omd' or 'frontend'
+ * @param {string} config.accessKeyId
+ * @param {string} config.secretAccessKey
+ * @param {string} config.localDir
+ */
+module.exports.uploadToAllEnvironments = function (config, cb) {
+  async.eachSeries(['mbq-assets-dev', 'mbq-assets-stg', 'mbq-assets-prd'], function (bucket, cb) {
+    upload(_.extend({bucket: bucket}, config), cb);
+  }, cb);
 };
