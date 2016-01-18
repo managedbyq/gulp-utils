@@ -46,3 +46,4 @@ module.exports.browserifyHelper = function(inputFile, options) {
 
 module.exports.runServer = require('./lib/server');
 module.exports.tiberius = require('./tiberius');
+module.exports.s3upload = require('./s3upload');
