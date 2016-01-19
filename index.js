@@ -44,6 +44,7 @@ module.exports.browserifyHelper = function(inputFile, options) {
   return rebundle();
 };
 
+module.exports.deployer = require('./lib/deployer');
 module.exports.runServer = require('./lib/server');
-module.exports.tiberius = require('./tiberius');
-module.exports.s3upload = require('./s3upload');
+module.exports.tiberius = require('./lib/tiberius');
+module.exports.s3upload = require('./lib/s3upload');
