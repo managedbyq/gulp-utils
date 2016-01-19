@@ -3,6 +3,7 @@
 var browserify = require('browserify');
 var buffer = require('vinyl-buffer');
 var exec = require('child_process').exec;
+var execSync = require('child_process').execSync;
 var fs = require('fs');
 var gulp = require('gulp');
 var gulpif = require('gulp-if');
@@ -47,6 +48,13 @@ module.exports.browserifyHelper = function (inputFile, options) {
 
 var BUMP_BRANCH = 'automation/bump';
 var MAIN_BRANCH = 'master';
+
+var isSameCommitHash = function(branchA, branchB) {
+  var hashA = String(execSync('git rev-parse ' + branchA));
+  var hashB = String(execSync('git rev-parse ' + branchB));
+
+  return hashA === hashB;
+};
 
 module.exports.bumpVersion = function (packageConfigPath, cb) {
 
