@@ -63,7 +63,7 @@ module.exports.bumpVersion = function (packageConfigPath, cb) {
     return cb();
   }
 
-  var packageConfig = require(packageConfigPath);
+  var packageConfig = JSON.parse(fs.readFileSync(packageConfigPath, 'utf8'));
   var versionArray = packageConfig.version.split('.');
   // increment patch version
   versionArray[2] = parseInt(versionArray[2], 10) + 1;
