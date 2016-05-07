@@ -5,8 +5,8 @@
   "description": "Shared Gulp resources",
   "author": "Q",
   "dependencies": {
-    "aws-sdk": "2.2.0",
     "async": "^1.5.2",
+    "aws-sdk": "2.2.0",
     "browserify": "~10.2.1",
     "cors": "^2.7.1",
     "express": "^4.13.3",
@@ -16,6 +16,7 @@
     "gulp-rename": "1.2.0",
     "gulp-uglify": "^1.5.1",
     "lodash": "^3.10.1",
+    "minimist": "^1.2.0",
     "request": "^2.67.0",
     "s3": "^4.4.0",
     "slack-node": "^0.1.7",
@@ -33,5 +34,8 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:managedbyq/gulp-utils.git"
+  },
+  "bin": {
+    "printLatestVersion" : "lib/printLatestVersion.js"
   }
 }
