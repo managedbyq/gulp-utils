@@ -56,56 +56,6 @@ var isSameCommitHash = function(branchA, branchB) {
   return hashA === hashB;
 };
 
-module.exports.bumpVersion = function (packageConfigPath, cb) {
-
-  if (isSameCommitHash('origin/' + MAIN_BRANCH, 'origin/' + BUMP_BRANCH)) {
-    console.log('Bump commit already created, aborting.');
-    return cb();
-  }
-
-  var packageConfig = JSON.parse(fs.readFileSync(packageConfigPath, 'utf8'));
-  var versionArray = packageConfig.version.split('.');
-  // increment patch version
-  versionArray[2] = parseInt(versionArray[2], 10) + 1;
-  packageConfig.version = versionArray.join('.');
-  fs.writeFile(packageConfigPath, JSON.stringify(packageConfig, null, 2), function (err) {
-    if (err) {
-      console.log('Error writing to \'package.json\'\n'.bold.red);
-      return cb(err);
-    }
-
-    var commitCommand = 'git add package.json && git commit -m "[bump] ' + packageConfig.version + '"';
-
-    exec(commitCommand, function (err) {
-      if (err) {
-        console.log('Error commiting changes to \'package.json\'\n'.bold.red);
-        return cb(err);
-      }
-
-      var commands = [
-        'git branch -f ' + MAIN_BRANCH + ' HEAD',   //Set main branch head to detached head
-        'git branch -f ' + BUMP_BRANCH + ' HEAD',   //Set bump branch head to detached head
-        'git push origin ' + MAIN_BRANCH,           //Will fail if origin branch has changes (intended)
-        'git push -f origin ' + BUMP_BRANCH,        //This can be forced if preceding succeeds
-      ];
-      exec(commands.join(' && '), function (err, stdout) {
-        if (err) {
-          var out = String(stdout);
-          console.log(out);
-
-          var log = String(execSync('git log -3'));
-          console.log(log);
-
-          console.log('Error pushing bump commits'.bold.red);
-          return cb(err);
-        }
-
-        cb();
-      });
-    });
-  });
-};
-
 module.exports.deployer = require('./lib/deployer');
 module.exports.runServer = require('./lib/server');
 module.exports.tiberius = require('./lib/tiberius');
