@@ -2,6 +2,7 @@
 
 var jshint = require('gulp-jshint');
 var gulp   = require('gulp');
+var childProcess = require('child_process');
 
 gulp.task('jslint', function(){
   return gulp
@@ -11,4 +12,15 @@ gulp.task('jslint', function(){
     .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('default', ['jslint']);
+gulp.task('test', function(cb) {
+  childProcess.exec('npm test', function(error, stdout, stderr) {
+    console.log('stdout: ' + stdout);
+    if (stderr) {
+      console.log('stderr: ' + stderr);
+    }
+    cb(error);
+  });
+});
+
+
+gulp.task('default', ['jslint', 'test']);
