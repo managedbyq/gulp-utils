@@ -35,6 +35,7 @@
     "url": "git@github.com:managedbyq/gulp-utils.git"
   },
   "bin": {
-    "printLatestVersion" : "lib/printLatestVersion.js"
+    "printLatestVersion" : "lib/printLatestVersion.js",
+    "printLatestStaticVersion" : "lib/printLatestStaticVersion.js"
   }
 }
