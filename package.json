@@ -1,7 +1,7 @@
 {
   "name": "gulp-utils",
   "private": "true",
-  "version": "3.0.6",
+  "version": "3.0.9",
   "description": "Shared Gulp resources",
   "author": "Q",
   "dependencies": {
