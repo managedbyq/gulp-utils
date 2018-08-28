@@ -7,7 +7,7 @@
   "dependencies": {
     "async": "2.0.0-rc.5",
     "aws-sdk": "2.2.0",
-    "browserify": "~10.2.1",
+    "browserify": "~14.5.0",
     "cors": "^2.7.1",
     "express": "^4.13.3",
     "fs-extra": "^0.30.0",
@@ -25,14 +25,14 @@
     "superagent": "^1.8.5",
     "vinyl-buffer": "1.0.0",
     "vinyl-source-stream": "1.1.0",
-    "watchify": "~3.2.1"
+    "watchify": "~3.11.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "gulp-jshint": "^2.0.0",
     "jshint": "^2.8.0",
     "jshint-stylish": "^2.1.0",
-    "mocha": "^2.5.3"
+    "mocha": "^4.1.0"
   },
   "main": "index.js",
   "repository": {
